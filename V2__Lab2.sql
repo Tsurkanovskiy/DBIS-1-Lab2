@@ -88,6 +88,11 @@ CREATE TABLE public."Tests"
         NOT VALID
 );
 
+DO $$
+BEGIN 
+IF (SELECT COUNT(*)
+FROM information_schema.tables 
+WHERE table_name = 'hist_results')>0 THEN
 INSERT INTO public."Territories"(territory, area, region, terr_type)	 
 	SELECT "TERNAME", "AREANAME", "REGNAME", "TerTypeName" FROM public.hist_results
 	UNION
@@ -191,3 +196,5 @@ INSERT INTO public."Tests"(participant_id, subject, t_language, status, mark_100
 		SELECT "OutID", "spaTest", 'іспанська', "spaTestStatus", "spaBall100", "spaBall12", "spaBall", NULL, "Year", "spaPTName","spaPTTerName", "spaPTAreaName", "spaPTRegName" FROM public."hist_results") AS Combined_tests
 		LEFT JOIN public."ZNO_locations" ON ZNO_loc = zno_location
 		WHERE "UkrTest" IS NOT NULL;
+END IF;
+END $$
